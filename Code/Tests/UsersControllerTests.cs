@@ -1,10 +1,21 @@
-﻿namespace Tests;
+﻿using Microsoft.AspNetCore.Mvc;
+using Xunit;
+using Api.Controllers;
 
-public class UnitTest1
+namespace Tests;
+
+public class UsersControllerTests
 {
     [Fact]
-    public void Test1()
+    public async Task Get_ReturnsOkResult()
     {
+        // Arrange - ініціалізуємо контролер (якого ще не існує)
+        var controller = new UsersController();
 
+        // Act - викликаємо метод Get
+        var result = await controller.Get();
+
+        // Assert - перевіряємо, що результат є типом OkObjectResult (статус 200)
+        Assert.IsType<OkObjectResult>(result);
     }
 }
