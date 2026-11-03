@@ -43,4 +43,34 @@ public class ClassroomsControllerTests
         Assert.Contains(classrooms, c => c.Number == "102");
         Assert.DoesNotContain(classrooms, c => c.Number == "101");
     }
+
+    [Fact]
+    public async Task CreateBooking_ReturnsConflict_WhenTimeOverlaps()
+    {
+        // Arrange
+        var controller = new BookingsController();
+        var baseTime = DateTime.Now;
+
+        // 1. Успішно бронюємо аудиторію "102" на 2 години
+        await controller.Post(new Booking
+        {
+            ClassroomId = "102",
+            StartTime = baseTime,
+            EndTime = baseTime.AddHours(2)
+        });
+
+        // 2. Створюємо конфліктне бронювання (починається через 1 годину, тобто перетинається)
+        var overlappingBooking = new Booking
+        {
+            ClassroomId = "102",
+            StartTime = baseTime.AddHours(1),
+            EndTime = baseTime.AddHours(3)
+        };
+
+        // Act - намагаємося зберегти конфліктне бронювання
+        var result = await controller.Post(overlappingBooking);
+
+        // Assert - очікуємо, що API відмовить і поверне статус 409 Conflict (або 400 Bad Request)
+        Assert.IsType<ConflictObjectResult>(result);
+    }
 }
