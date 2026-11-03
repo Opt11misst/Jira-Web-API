@@ -70,9 +70,31 @@ public class BookingsControllerTests
 
         // Act - намагаємося скасувати бронювання за його ID
         // (Методу Delete теж ще не існує)
-        var result = controller.Delete(bookingId);
+        var result = await controller.Delete(bookingId);
 
         // Assert - REST стандарти вимагають повертати 204 No Content при успішному видаленні
         Assert.IsType<NoContentResult>(result);
+    }
+    [Fact]
+    public async Task CreateMaintenanceBooking_ReturnsCreatedResult_AndHasMaintenanceFlag()
+    {
+        // Arrange - створюємо ремонтне бронювання на 3 дні
+        var controller = new BookingsController();
+        var maintenanceBooking = new Booking
+        {
+            ClassroomId = "505e",
+            StartTime = DateTime.Now.AddDays(2),
+            EndTime = DateTime.Now.AddDays(5),
+            IsMaintenance = true // Помилка компіляції: поля ще не існує
+        };
+
+        // Act - створюємо запис про ремонт
+        var result = await controller.Post(maintenanceBooking);
+
+        // Assert - перевіряємо, що запис успішно створено і прапорець зберігся
+        var createdResult = Assert.IsType<CreatedAtActionResult>(result);
+        var returnedBooking = Assert.IsType<Booking>(createdResult.Value);
+
+        Assert.True(returnedBooking.IsMaintenance);
     }
 }

@@ -33,5 +33,19 @@ namespace Api.Controllers
             var bookings = _bookings.Where(b => b.ClassroomId == classroomId).ToList();
             return Ok(bookings);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var booking = _bookings.FirstOrDefault(b => b.Id == id);
+
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+            _bookings.Remove(booking);
+            return NoContent();
+        }
     }
 }
