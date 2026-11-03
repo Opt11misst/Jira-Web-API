@@ -29,4 +29,27 @@ public class BookingsControllerTests
         var returnedBooking = Assert.IsType<Booking>(createdResult.Value);
         Assert.Equal("101", returnedBooking.ClassroomId);
     }
+    [Fact]
+    public async Task GetSchedule_ReturnsBookings_ForSpecificClassroom()
+    {
+        // Arrange - створюємо контролер
+        var controller = new BookingsController();
+        var roomId = "202b"; // Використовуємо унікальний номер, щоб тести не впливали один на одного
+        var time = DateTime.Now.AddDays(1); // Беремо завтрашній день
+
+        // Створюємо два успішних бронювання (без перетину) для цієї аудиторії
+        await controller.Post(new Booking { ClassroomId = roomId, StartTime = time, EndTime = time.AddHours(1) });
+        await controller.Post(new Booking { ClassroomId = roomId, StartTime = time.AddHours(2), EndTime = time.AddHours(3) });
+
+        // Act - намагаємося отримати розклад для аудиторії 202b
+        // (Visual Studio підкреслить Get червоним, бо цього методу ще немає)
+        var result = await controller.Get(roomId);
+
+        // Assert - перевіряємо, що повернувся 200 OK і список бронювань
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var schedule = Assert.IsAssignableFrom<System.Collections.Generic.IEnumerable<Booking>>(okResult.Value);
+
+        // Перевіряємо, що наше бронювання є у розкладі
+        Assert.Contains(schedule, b => b.ClassroomId == roomId);
+    }
 }
