@@ -26,5 +26,12 @@ namespace Api.Controllers
             _bookings.Add(booking);
             return CreatedAtAction(nameof(Post), new { id = booking.ClassroomId }, booking);
         }
+
+        [HttpGet("{classroomId}")]
+        public async Task<IActionResult> Get(string classroomId)
+        {
+            var bookings = _bookings.Where(b => b.ClassroomId == classroomId).ToList();
+            return Ok(bookings);
+        }
     }
 }
