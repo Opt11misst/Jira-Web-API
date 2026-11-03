@@ -1,4 +1,3 @@
-// Copilot, відрефактори цей метод: додай приватний статичний список _classrooms для зберігання даних. Зроби метод Post асинхронним (async Task<IActionResult>), додай аудиторію до списку і поверни CreatedAtAction.
 
 using Microsoft.AspNetCore.Mvc;
 using Api.Models;
@@ -16,6 +15,13 @@ namespace Api.Controllers
         {
             _classrooms.Add(classroom);
             return CreatedAtAction(nameof(Post), new { id = classroom.Number }, classroom);
+        }
+
+        [HttpGet]
+        public IActionResult Get(int minCapacity)
+        {
+            var filteredClassrooms = _classrooms.Where(c => c.Capacity >= minCapacity).ToList();
+            return Ok(filteredClassrooms);
         }
     }
 }
