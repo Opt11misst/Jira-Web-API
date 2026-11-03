@@ -18,9 +18,11 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get(int minCapacity)
+        public async Task<IActionResult> Get(int? minCapacity = null)
         {
-            var filteredClassrooms = _classrooms.Where(c => c.Capacity >= minCapacity).ToList();
+            var filteredClassrooms = minCapacity.HasValue
+                ? _classrooms.Where(c => c.Capacity >= minCapacity.Value).ToList()
+                : _classrooms.ToList();
             return Ok(filteredClassrooms);
         }
     }

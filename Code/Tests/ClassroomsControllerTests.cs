@@ -33,7 +33,7 @@ public class ClassroomsControllerTests
 
         // Act - намагаємося отримати аудиторії з місткістю від 40 місць
         // (Visual Studio підкреслить цей рядок червоним, бо методу Get з таким параметром ще немає)
-        var result = controller.Get(minCapacity: 40);
+        var result = await controller.Get(minCapacity: 40);
 
         // Assert - перевіряємо, що повернувся статус 200 OK і правильний список
         var okResult = Assert.IsType<OkObjectResult>(result);
