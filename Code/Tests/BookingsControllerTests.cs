@@ -2,8 +2,8 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
-// using Api.Controllers; // Знімеш коментар на етапі Green
-// using Api.Models;      // Знімеш коментар на етапі Green
+using Api.Controllers; // Знімеш коментар на етапі Green
+using Api.Models;      // Знімеш коментар на етапі Green
 
 namespace Tests;
 
