@@ -52,4 +52,27 @@ public class BookingsControllerTests
         // Перевіряємо, що наше бронювання є у розкладі
         Assert.Contains(schedule, b => b.ClassroomId == roomId);
     }
+    [Fact]
+    public async Task DeleteBooking_RemovesBooking_AndReturnsNoContent()
+    {
+        // Arrange - створюємо контролер і нове бронювання з ID
+        var controller = new BookingsController();
+        var bookingId = System.Guid.NewGuid(); // Генеруємо унікальний ідентифікатор
+
+        var newBooking = new Booking
+        {
+            Id = bookingId, // Помилка компіляції: поля Id ще не існує
+            ClassroomId = "303c",
+            StartTime = DateTime.Now,
+            EndTime = DateTime.Now.AddHours(1)
+        };
+        await controller.Post(newBooking);
+
+        // Act - намагаємося скасувати бронювання за його ID
+        // (Методу Delete теж ще не існує)
+        var result = controller.Delete(bookingId);
+
+        // Assert - REST стандарти вимагають повертати 204 No Content при успішному видаленні
+        Assert.IsType<NoContentResult>(result);
+    }
 }
