@@ -17,5 +17,11 @@ namespace Api.Controllers
                 new User { Id = 3, Name = "Test User 3" }
             });
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            return NoContent();
+        }
     }
 }
