@@ -26,4 +26,17 @@ namespace Api.Controllers
             return Ok(filteredClassrooms);
         }
     }
-}
+    [HttpPost]
+        public async Task<IActionResult> Post(Classroom classroom)
+        {
+            // Проверка на дубликат номера аудитории
+            if (_classrooms.Any(c => c.Number == classroom.Number))
+            {
+                return Conflict("Аудиторія з таким номером уже існує.");
+            }
+
+            _classrooms.Add(classroom);
+            return CreatedAtAction(nameof(Post), classroom);
+        }
+
+    }
