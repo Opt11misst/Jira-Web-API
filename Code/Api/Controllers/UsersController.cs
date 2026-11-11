@@ -15,7 +15,7 @@ namespace Api.Controllers
                 new User { Id = 1, Name = "Test User 1" },
                 new User { Id = 2, Name = "Test User 2" },
                 new User { Id = 3, Name = "Test User 3" }
-            });
+                        });
         }
 
         [HttpDelete("{id}")]
