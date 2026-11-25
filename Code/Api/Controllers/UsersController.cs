@@ -1,35 +1,33 @@
-using Microsoft.AspNetCore.Mvc;
+using Api.Data;
 using Api.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class UsersController(AppDbContext db) : ControllerBase
     {
-        private static readonly List<User> _users = new()
-        {
-            new User { Id = 1, Name = "Test User 1" },
-            new User { Id = 2, Name = "Test User 2" },
-            new User { Id = 3, Name = "Test User 3" }
-        };
-
         [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            return Ok(_users.ToList());
-        }
+        public async Task<IActionResult> Get() => Ok(await db.Users.ToListAsync());
 
         [HttpPost]
         public async Task<IActionResult> Post(User user)
         {
-            _users.Add(user);
+            db.Users.Add(user);
+            await db.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            var user = await db.Users.FindAsync(id);
+            if (user == null) return NotFound();
+
+            db.Users.Remove(user);
+            await db.SaveChangesAsync();
             return NoContent();
         }
     }
