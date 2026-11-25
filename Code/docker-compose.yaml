@@ -17,6 +17,7 @@ services:
       timeout: 5s
       retries: 10
 
+
   api:
     build:
       context: .
@@ -34,6 +35,8 @@ services:
       - backend
 
   pgadmin:
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
     image: dpage/pgadmin4
     container_name: booking-pgadmin
     restart: unless-stopped
@@ -47,8 +50,9 @@ services:
     networks:
       - backend
 
-volumes:
+volumes: 
   pgdata:
+  pgadmin_data:
 
 networks:
   backend:
